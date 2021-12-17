@@ -40,7 +40,8 @@ We put our training in a pipeline with the [`make_pipeline`](https://scikit-lear
 #### Basic Pipeline
 The basic pipeline trains and evaluates each model by using [`cross_val_score`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html), a function that returns all the score of the [Stratified K-fold](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedKFold.html) cross validation.
 By taking the mean for each fold after evaluating and stacking their score in an array, we can see which model is performing better in general. 
-The default number of fold for our cross validation during basic training is **5**. 
+The default number of fold for our cross validation during basic training is **5**.
+After using that, we re fit our model by using [`SelectFromModel`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectFromModel.html) 
 
 #### Hyper Parameter tuning
 The hyperparameter tuning is done by using a cross  validation grid search with [`GridSearchCV`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html). Our cross validation strategy is still [Stratified K-fold](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedKFold.html) with **10** folds.
@@ -48,8 +49,59 @@ The hyperparameter tuning is done by using a cross  validation grid search with 
 ### Models used
 * [Multi Layer Perceptron](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html) : A "vanilla" feed forward artificial neural network  classifier implemented with Scikit Learn library [`MLP_Classifier`](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html). We tried this model to see if it can perform well on our big number of features.
 * [Random Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) : A model that fits a certain number of [decision tree classifiers](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) on sub-samples of the dataset and uses the averaging to improve accuracy of predictions and control over-fitting.
-* [AdaBoost](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html) : A meta-estimator that boost a classifier so that it can focus on most difficult cases. Our boosted model is a basic [Decision Trees classifier](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier).
+* [AdaBoost](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html) : A meta-estimator that boost a classifier so that it can focus on most difficult cases. Our boosted model is a basic [Decision Tree classifier](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier).
 * [Voting](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.VotingClassifier.html) :  An ensemble method that trains on a numerous set of models and predicts the output based on voting with majority of models with the highest probability. Here we used Voting on our 3 previous classes.
+  
 # Results
+Here we show the best hyperparameter and results we had for each models. Some other model were omitted from this report such as SVM and K-NN due to their poor results on Kaggle public test set.
+The Competition has 2 set score : 
+* A public set which is calculated with approximately 30% of the test data. 
+* The final results on the test set based on the other 70%.
 
-# Discussions
+|   **Model**   |                               **Hyper Parameters**                               | **F-1 score (train set)**  | **F-1 score (public set)** | **F-1 score (private set)** |
+|:-------------:|:--------------------------------------------------------------------------------:|:---------------------------:|:-----------------------------------------:|:------------------------------------------:|
+|      *MLP*      | -Random state : **1** <br> -Activation Function : **tanh** <br> -Solver : **"Adam"** |         **0.863767**        |                **0.63707**                |                                            |
+| *Random Forest* (50 folds) |                              - n_estimator : **450**                             |         **0.885561**        |                **1.0**                |                                            |
+|    *AdaBoost*   |     -n_estimators : **100** <br> -learning rate : **0.01**    |         **0.848781**        |                **0.69721**                |                                            |
+|     *Voting*    |                                        NA                                        |              NA             |                **0.96470**                |                                            |
+# Discussion
+After having those 3 results we were astonished by the drop with MLP and AdaBoost on the test set, but this is certainly due that both model cannot fit all the data (MLP fits). This is also why Random Forest works the best here, because it is an ensemble of numerous decisions trees. Even though we increase the number of fold way too much to have the best F-1 score possible. 
+
+After discussing the results with other students who used the same model, it also seemed that the feature selection also has its importance on the results.
+
+# Statement of Contribution 
+We hereby state that all the
+work presented in this report is that of the authors
+
+<div style="page-break-after: always;"></div>
+
+# References
+* [CropHarvest](https://openreview.net/pdf?id=JtjzUXPEaCu)
+*  [F-1 score](https://en.wikipedia.org/wiki/F-score)
+* [Scikit-learn](https://scikit-learn.org/stable/) modules :
+  * [Grid Search CV](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html?highlight=grid\%20search#sklearn.model_selection.GridSearchCV)
+  * [Power Transformer](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PowerTransformer.html)
+  *  [Pipelining on Sklearn](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html)
+  * [`cross_val_score`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html)
+  * [Stratified K-fold](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedKFold.html)
+  * [`SelectFromModel`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectFromModel.html) 
+  * [Multi Layer Perceptron](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html)
+  * [Decision tree classifiers](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html)
+  * [Random Forest Classifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html?highlight=random\%20forest#sklearn.ensemble.RandomForestClassifier)
+  * [AdaBoost](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html)
+  * [Voting](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.VotingClassifier.html)
+  * [Plotting learning and Validation curve](https://scikit-learn.org/stable/auto_examples/model_selection/plot_learning_curve.html#sphx-glr-auto-examples-model-selection-plot-learning-curve-py)
+
+<div style="page-break-after: always;"></div>
+
+# Appendix
+## Histogram of the training data with only selected features 
+![Histogram](img/histogram_selected_features.png)
+
+<div style="page-break-after: always;"></div>
+
+### Correlation matrix of the selected features
+![Corr_Matr](img/correlation_matrix_features.svg)
+### Learning curve, scalability and performance on our Random Forest
+![Learning and validation curve on our Random Forest](img/learning_validation_curve.png)
+
