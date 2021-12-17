@@ -53,7 +53,7 @@ The hyperparameter tuning is done by using a cross  validation grid search with 
 * [Voting](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.VotingClassifier.html) :  An ensemble method that trains on a numerous set of models and predicts the output based on voting with majority of models with the highest probability. Here we used Voting on our 3 previous classes.
   
 # Results
-Here we show the best hyperparameter and results we had for each models. Some other model were omitted from this report such as SVM and K-NN due to their poor results on Kaggle public test set.
+Here we show the best hyper parameters and results we had for each models. Some other model were omitted from this report such as SVM and K-NN due to their poor results on Kaggle public test set.
 The Competition has 2 set score : 
 * A public set which is calculated with approximately 30% of the test data. 
 * The final results on the test set based on the other 70%.
@@ -67,9 +67,9 @@ The Competition has 2 set score :
 # Discussion
 After having those 3 results we were astonished by the drop with MLP and AdaBoost on the test set, but this is certainly due that both model cannot fit all the data (MLP fits). This is also why Random Forest works the best here, because it is an ensemble of numerous decisions trees. Even though we increase the number of fold way too much to have the best F-1 score possible. 
 
-After discussing the results with other students who used the same model, it also seemed that the feature selection also has its importance on the results.
+After discussing the results with other students who used the same model, it also seemed that the feature selection also has its importance on the results of our Random Forest, where some of them didn't manage to entirely have 100% accuracy on the public set.
 
-# Statement of Contribution 
+## Statement of Contribution 
 We hereby state that all the
 work presented in this report is that of the authors
 
