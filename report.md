@@ -8,15 +8,15 @@
 
 
 # Introduction
-In this project, we participate in a Kaggle competition where the goal is to design a machine learning algorithm to classify locations around the world on 2 different classes :
+In this project, we participated in a Kaggle competition where the goal is to design a machine learning algorithm to classify locations around the world on 2 different classes :
 * Crop land : **1**
 * Non-crop land : **0**
 
-To do so we have a dataset that containing 12 months of  meteorological and climatological data. This set is composed of a 216 features subset of the [CropHarvest](https://openreview.net/pdf?id=JtjzUXPEaCu) dataset where every data points corresponds to a geographical location.
+To do so we have a dataset that containing 12 months of meteorological and climatological data. This set is composed of a 216 features subset of the [CropHarvest](https://openreview.net/pdf?id=JtjzUXPEaCu) dataset where each data points corresponds to a geographical location.
 
 The goal of this project is to implement and train classification algorithms in order to have the highest performance on the test set available on Kaggle. The scoring in this competition is based on the [f1 score](https://en.wikipedia.org/wiki/F-score). 
 
-Four baselines needs to be beaten on this competition :
+Four baselines need to be beaten on this competition :
 
 1. A dummy classifier that predicts the most frequent class in the set  : **0.71886**
 2. A weak machine learning algorithm : **0.94736**
@@ -24,7 +24,7 @@ Four baselines needs to be beaten on this competition :
 4. The TA's best baseline : **0.99516**
 
 We will first see which algorithms and methodologies were done for this competition.
-Then we will see and discuss our results.
+Then we will show and discuss our results.
 
 <div style="page-break-after: always;"></div>
 
@@ -48,7 +48,7 @@ The hyperparameter tuning is done by using a cross  validation grid search with 
 
 ### Models used
 * [Multi Layer Perceptron](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html) : A "vanilla" feed forward artificial neural network  classifier implemented with Scikit Learn library [`MLP_Classifier`](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html). We tried this model to see if it can perform well on our big number of features.
-* [Random Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) : A model that fits a certain number of [decision tree classifiers](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) on sub-samples of the dataset and uses the averaging to improve accuracy of predictions and control over-fitting.
+* [Random Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) : A model that fits a certain number of [decision trees classifiers](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) on sub-samples of the dataset and uses the averaging to improve accuracy of predictions and control over-fitting.
 * [AdaBoost](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html) : A meta-estimator that boost a classifier so that it can focus on most difficult cases. Our boosted model is a basic [Decision Tree classifier](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier).
 * [Voting](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.VotingClassifier.html) :  An ensemble method that trains on a numerous set of models and predicts the output based on voting with majority of models with the highest probability. Here we used Voting on our 3 previous classes.
   
@@ -60,14 +60,13 @@ The Competition has 2 set score :
 
 |   **Model**   |                               **Hyper Parameters**                               | **F-1 score (train set)**  | **F-1 score (public set)** | **F-1 score (private set)** |
 |:-------------:|:--------------------------------------------------------------------------------:|:---------------------------:|:-----------------------------------------:|:------------------------------------------:|
-|      *MLP*      | -Random state : **1** <br> -Activation Function : **tanh** <br> -Solver : **"Adam"** |         **0.863767**        |                **0.63707**                |                                            |
-| *Random Forest* (50 folds) |                              - n_estimator : **450**                             |         **0.885561**        |                **1.0**                |                                            |
-|    *AdaBoost*   |     -n_estimators : **100** <br> -learning rate : **0.01**    |         **0.848781**        |                **0.69721**                |                                            |
-|     *Voting*    |                                        NA                                        |              NA             |                **0.96470**                |                                            |
+|      *MLP*      | -Random state : **1** <br> -Activation Function : **tanh** <br> -Solver : **"Adam"** |         **0.863767**        |                **0.63707**                |                  **0.63844**                          |
+| *Random Forest* (50 folds) |                              - n_estimator : **450**                             |         **0.885561**        |                **1.0**                |                   **0.99559**                         |
+|    *AdaBoost*   |     -n_estimators : **100** <br> -learning rate : **0.01**    |         **0.848781**        |                **0.69721**                |                 **0.67013**                           |
+|     *Voting*    |                                        NA                                        |              NA             |                **0.96470**                |                     **0.94836**                       |
 # Discussion
-After having those 3 results we were astonished by the drop with MLP and AdaBoost on the test set, but this is certainly due that both model cannot fit all the data (MLP fits). This is also why Random Forest works the best here, because it is an ensemble of numerous decisions trees. Even though we increase the number of fold way too much to have the best F-1 score possible. 
+After having those 3 results we were astonished by the drop with MLP and AdaBoost on the test set, but this is certainly due that we did prediction on the wrong `test_nolabels.csv` (reference on [piazza](https://piazza.com/class/kt0ir0ah1nk3ml?cid=207)). Our Random Forest works the best certainly because it is an ensemble of numerous decisions trees. Even though we discovered that **400** estimators gave us a better score on the final set (**0.99669**), the last model held by Kaggle is the one with 1.0 on the public set. This also means that **450** estimators made the model overfitting on the full set. 
 
-After discussing the results with other students who used the same model, it also seemed that the feature selection also has its importance on the results of our Random Forest, where some of them didn't manage to entirely have 100% accuracy on the public set.
 
 ## Statement of Contribution 
 We hereby state that all the
